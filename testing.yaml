@@ -1,18 +1,11 @@
-apiVersion: specs.smi.nginx.com/v1alpha1
-kind: RateLimit
+apiVersion: split.smi-spec.io/v1alpha3
+kind: TrafficSplit
 metadata:
-   name: backend-rate-limit
-   namespace: testing
+  name: target-ts
 spec:
-  destination:
-     kind: Service
-     name: ratelimit-backend
-     namespace: testing
-  sources:
-  - kind: Deployment
-    name: ratelimit-frontend
-    namespace: testing
-  name: 10rm
-  rate: 10r/m
-  burst: 0
-  delay: nodelay
+  service: target-svc
+  backends:
+  - service: target-v1-0
+    weight: 50
+  - service: target-v2-0
+    weight: 50
