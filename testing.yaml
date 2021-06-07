@@ -1,34 +1,18 @@
----
-
-apiVersion: specs.smi-spec.io/v1alpha3
-kind: HTTPRouteGroup
+apiVersion: specs.smi.nginx.com/v1alpha1
+kind: RateLimit
 metadata:
-  name: route-group
-spec:
-  matches:
-  - name: destination-traffic
-    methods:
-    - GET
-    pathRegex: "/echo"
-    headers:
-    - X-Demo-1: "^demo-1$"
-    - x-demo-2: "demo"
-    
----
-
-apiVersion: access.smi-spec.io/v1alpha2
-kind: TrafficTarget
-metadata:
-  name: traffic-target
+   name: backend-rate-limit
+   namespace: testing
 spec:
   destination:
-    kind: ServiceAccount
-    name: destination-sa
-  rules:
-  - kind: HTTPRouteGroup
-    name: route-group
-    matches:
-    - destination-traffic
+     kind: Service
+     name: ratelimit-backend
+     namespace: testing
   sources:
-  - kind: ServiceAccount
-    name: source-allowed-sa
+  - kind: Deployment
+    name: ratelimit-frontend
+    namespace: testing
+  name: 10rm
+  rate: 10r/m
+  burst: 0
+  delay: nodelay
